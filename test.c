@@ -1,26 +1,20 @@
-#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <stdlib.h>
 
-int square(int arg);
+#define BUFF_SIZE 2
 
-int main(void){
-   printf("%d \n",square(7));
-   int arr [5];
-   arr[0] = 753;
-   arr[1] = 123654;
-   arr[2] = -2145;
-   arr[3] = 0;
-   arr[4] = 10000;
-  int countDown = sizeof(arr) / sizeof(arr[0]);
-  while(countDown > 0){
-    printf("Array element : %d \n" ,arr[countDown]);
-    countDown--;
-  }
+int main()
+{
 
+    int terminal;
+    char buffer[BUFF_SIZE] = "M\n";        // This will store the character to print +  new line
+    terminal = open("/dev/tty", O_WRONLY); // systemcall to open terminal
+    if (terminal < 0)
+        exit(1); // some error happened
 
+    dup2(terminal, STDOUT_FILENO); // use our newly opened terminal as default Standard output
 
-    return 0;
-}
-
-int square(int arg){
-   return arg*arg;
+    if (write(terminal, buffer, BUFF_SIZE) != BUFF_SIZE) // systemcall to write to terminal
+        exit(1);                                         // We couldn't write anything
 }
